@@ -68,8 +68,15 @@ The Green Vehicle Routing Problem addresses the challenge of designing delivery 
 git clone https://github.com/bazylhorsey/green-vehicle-routing-optimization.git
 cd green-vehicle-routing-optimization
 
-# Install required packages
-pip install gurobipy pandas numpy matplotlib
+# Create virtual environment (recommended)
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install the package
+pip install -e .
+
+# Or install requirements directly
+pip install -r requirements.txt
 
 # Ensure Gurobi license is configured
 # Follow instructions at: https://www.gurobi.com/documentation/
@@ -79,20 +86,32 @@ pip install gurobipy pandas numpy matplotlib
 
 ```
 green-vehicle-routing-optimization/
-├── data/                          # Input data files
-│   ├── Demand.csv                # Customer demand (kg)
-│   ├── Distances.csv             # Distance matrix (meters)
-│   ├── Times.csv                 # Travel time matrix (seconds)
-│   ├── CFV_Operating_Costs.csv   # CFV cost parameters
-│   ├── HGEV_Operating_Costs.csv  # HGEV cost parameters
-│   └── General.csv               # General parameters
-├── config.py                      # Configuration and parameters
-├── utils.py                       # Utility functions
-├── optimized_solver.py            # MILP solver with indicator constraints
-├── alns_solver.py                 # ALNS metaheuristic
-├── visualize.py                   # Visualization tools
-├── main.py                        # Legacy implementation
-└── README.md                      # This file
+├── src/
+│   └── green_vrp/                # Main package
+│       ├── __init__.py
+│       ├── config.py             # Configuration and parameters
+│       ├── utils.py              # Utility functions
+│       ├── optimized_solver.py   # MILP solver with indicator constraints
+│       ├── alns_solver.py        # ALNS metaheuristic
+│       └── visualize.py          # Visualization tools
+├── data/                         # Input data files
+│   ├── Demand.csv               # Customer demand (kg)
+│   ├── Distances.csv            # Distance matrix (meters)
+│   ├── Times.csv                # Travel time matrix (seconds)
+│   ├── CFV_Operating_Costs.csv  # CFV cost parameters
+│   ├── HGEV_Operating_Costs.csv # HGEV cost parameters
+│   └── General.csv              # General parameters
+├── docs/                         # Documentation
+│   ├── QUICKSTART.md            # Quick start guide
+│   ├── PROJECT_SUMMARY.md       # Implementation details
+│   ├── COMPARISON.md            # Performance comparison
+│   └── FULL_REPORT.md           # Comprehensive analysis
+├── results/                      # Generated output files
+├── run_optimization.py           # Command-line interface
+├── setup.py                      # Package setup
+├── requirements.txt              # Python dependencies
+├── README.md                     # This file
+└── LICENSE                       # License information
 ```
 
 ## 📖 Usage
@@ -100,8 +119,8 @@ green-vehicle-routing-optimization/
 ### Quick Start - MILP Solver
 
 ```python
-from config import create_default_config
-from optimized_solver import GreenVRPModel
+from src.green_vrp.config import create_default_config
+from src.green_vrp.optimized_solver import GreenVRPModel
 
 # Create configuration
 config = create_default_config()
@@ -119,12 +138,37 @@ if success:
     print(f"Emissions: {results['total_emissions']:.2f} tons CO2e")
 ```
 
+### Command Line Interface
+
+The easiest way to run optimizations is using the CLI:
+
+```bash
+# Cost minimization
+python run_optimization.py --mode cost --time-limit 600
+
+# Emissions minimization
+python run_optimization.py --mode emissions --time-limit 600
+
+# Weighted optimization (50% cost, 50% emissions)
+python run_optimization.py --mode weighted --weight-cost 0.5
+
+# Pareto frontier analysis
+python run_optimization.py --mode pareto --pareto-points 5
+
+# ALNS metaheuristic
+python run_optimization.py --mode alns --iterations 1000
+```
+
 ### Multi-Objective Optimization
 
 To perform proper multi-objective optimization:
 
 ```python
+from src.green_vrp.config import create_default_config
+from src.green_vrp.optimized_solver import GreenVRPModel
+
 # Step 1: Find cost minimum
+config = create_default_config()
 config.run_mode = 'cost_min'
 model = GreenVRPModel(config)
 model.build_model()

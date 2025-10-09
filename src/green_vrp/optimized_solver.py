@@ -8,8 +8,8 @@ from typing import Dict, Tuple
 import gurobipy as gp
 from gurobipy import GRB
 
-from config import ModelParams, create_default_config
-from utils import load_data, expand_network, reconstruct_routes, print_solution_summary, validate_solution
+from .config import ModelParams, create_default_config
+from .utils import load_data, expand_network, reconstruct_routes, print_solution_summary, validate_solution
 
 
 class GreenVRPModel:

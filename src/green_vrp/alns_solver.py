@@ -8,10 +8,10 @@ Implements removal and repair operators with adaptive weight selection
 import random
 import math
 import copy
-from typing import List, Dict, Tuple, Set, Callable
+from typing import List, Set, Dict, Tuple
 import numpy as np
 
-from config import ModelParams
+from .config import ModelParams
 
 
 class Solution:

@@ -7,9 +7,9 @@ import sys
 import argparse
 from pathlib import Path
 
-from config import create_default_config, ModelParams
-from optimized_solver import GreenVRPModel
-from visualize import create_full_report
+from src.green_vrp.config import create_default_config, ModelParams
+from src.green_vrp.optimized_solver import GreenVRPModel
+from src.green_vrp.visualize import create_full_report
 
 
 def run_cost_minimization(config: ModelParams):
